@@ -37,7 +37,7 @@ public class CoastLengthCalculatorImpl implements CoastLengthCalculator {
                     if (location == Location.SEA || location == Location.COAST_WATER) {
                         coastLength += calculateCoastLength(map, i, j);
                         location = Location.COAST_LAND;
-//                        printMap(n, m, map);
+                        printMap(n, m, map);
                     } else if (location == Location.COAST_LAND) {
                         location = Location.LAND;
                     }
@@ -53,22 +53,22 @@ public class CoastLengthCalculatorImpl implements CoastLengthCalculator {
     }
 
     //can be used for logging
-//    private static void printMap(int n, int m, int[][] map) {
-//        for (int i = 0; i < n; i++) {
-//            for (int j = 0; j < m; j++) {
-//                System.out.print(map[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
-//
-//        System.out.println("--------------------------");
-//    }
+    private static void printMap(int n, int m, int[][] map) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                System.out.print(map[i][j] + " ");
+            }
+            System.out.println();
+        }
 
-    private int calculateCoastLength(int[][] map, int i, int j) {
+        System.out.println("--------------------------");
+    }
+
+    private int calculateCoastLength(int[][] map, int startX, int startY) {
         int coastLength = 0;
-        int x = i, y = j;
-        Direction firstDir = null;
+        int x = startX, y = startY;
         Direction prev = null, next = null;
+        boolean continueCoastWalking = true;
         nextMovement:
         do {
             if (next != null) {
@@ -80,9 +80,6 @@ public class CoastLengthCalculatorImpl implements CoastLengthCalculator {
                 int nextX = x + direction.xOffset;
                 int nextY = y + direction.yOffset;
                 if (map[nextX][nextY] == Location.LAND.value || map[nextX][nextY] == Location.COAST_LAND.value) {
-                    if (next == null) {
-                        firstDir = direction;
-                    }
                     next = direction;
 
                     if (prev != null) {
@@ -90,15 +87,20 @@ public class CoastLengthCalculatorImpl implements CoastLengthCalculator {
                         coastLength += coastLine.size();
                         map[x][y] = Location.COAST_LAND.value;
                         MovementCalculator.updateLocationByDirections(x, y, map, coastLine, Location.COAST_WATER);
-//                        System.out.println(prev + " -> " + next + " " + coastLength);
+                        System.out.println(prev + " -> " + next + " " + coastLength);
                     }
-
+                    if (x == startX && y == startY) {
+                        if (map[nextX][nextY] == Location.COAST_LAND.value) {
+                            continueCoastWalking = false;
+                        }
+                    }
                     x = nextX;
                     y = nextY;
                     continue nextMovement;
                 }
             }
-        } while (x != i || y != j);
+            break;
+        } while (continueCoastWalking);
 
         //NOTE: this is 1 island case
         if (next == null) {
@@ -107,10 +109,6 @@ public class CoastLengthCalculatorImpl implements CoastLengthCalculator {
             return 4;
         }
 
-        List<Direction> coastLine = MovementCalculator.findCoastLine(next, firstDir);
-        map[x][y] = Location.COAST_LAND.value;
-        MovementCalculator.updateLocationByDirections(x, y, map, coastLine, Location.COAST_WATER);
-        coastLength += coastLine.size();
         return coastLength;
     }
 

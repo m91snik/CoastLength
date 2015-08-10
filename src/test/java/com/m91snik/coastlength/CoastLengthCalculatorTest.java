@@ -54,6 +54,18 @@ public class CoastLengthCalculatorTest {
     }
 
     @Test
+    public void testPoly4() {
+        int[][] map = new int[][]{{0, 0, 0, 0, 0}, {0, 0, 1, 1, 0}, {0, 1, 0, 1, 0}, {0, 0, 0, 0, 0}};
+        Assert.assertEquals(12, coastLengthCalculator.findCoastAndCalculateLength(3, 4, map));
+    }
+
+    @Test
+    public void testPoly5() {
+        int[][] map = new int[][]{{0, 0, 0, 0, 0}, {0, 1, 1, 0, 0}, {0, 1, 0, 1, 0}, {0, 0, 0, 0, 0}};
+        Assert.assertEquals(12, coastLengthCalculator.findCoastAndCalculateLength(3, 4, map));
+    }
+
+    @Test
     public void testPolyWithBlanks() {
         int[][] map = new int[][]{
                 {0, 0, 0, 0, 0, 0, 0},
