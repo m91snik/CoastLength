@@ -16,14 +16,8 @@ public class Main {
         int n = scanner.nextInt();
         int m = scanner.nextInt();
 
-        int[][] map = new int[n + 2][m + 2];
+        int[][] map = new int[n + 4][m + 4];
 
-        for (int i = 0; i < n; i++) {
-            map[i][0] = 0;
-            map[0][i] = 0;
-            map[i][m + 1] = 0;
-            map[n + 1][i] = 0;
-        }
         for (int i = 0; i < n; i++) {
             String str = scanner.next();
             for (int j = 0; j < m; j++) {
@@ -31,13 +25,13 @@ public class Main {
                 if (mapCellValue != 0 && mapCellValue != 1) {
                     throw new IllegalArgumentException("Please enter map of 0 or 1 elements");
                 }
-                map[i + 1][j + 1] = mapCellValue;
+                map[i + 2][j + 2] = mapCellValue;
             }
         }
 
         com.m91snik.coastlength.CoastLengthCalculator coastLengthCalculator = new CoastLengthCalculatorImpl();
 
-        int coastLength = coastLengthCalculator.findCoastAndCalculateLength(n + 2, m + 2, map);
+        int coastLength = coastLengthCalculator.findCoastAndCalculateLength(n + 4, m + 4, map);
 
         System.out.println(coastLength);
 

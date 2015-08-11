@@ -20,9 +20,10 @@ public class CoastLengthCalculatorImpl implements CoastLengthCalculator {
     public int findCoastAndCalculateLength(int n, int m, int[][] map) {
         int coastLength = 0;
 
-        Location location = Location.SEA;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
+        Location location;
+        for (int i = 1; i < n-1; i++) {
+            location = Location.SEA;
+            for (int j = 1; j < m-1; j++) {
                 //NOTE: we can go from water to coast water, than to coast ground and only than to ground
                 // here we ignore lakes and do not update location value to SEA because we are on the land
                 if (map[i][j] == Location.COAST_LAND.value) {
@@ -37,7 +38,7 @@ public class CoastLengthCalculatorImpl implements CoastLengthCalculator {
                     if (location == Location.SEA || location == Location.COAST_WATER) {
                         coastLength += calculateCoastLength(map, i, j);
                         location = Location.COAST_LAND;
-                        printMap(n, m, map);
+//                        printMap(n, m, map);
                     } else if (location == Location.COAST_LAND) {
                         location = Location.LAND;
                     }
@@ -81,13 +82,12 @@ public class CoastLengthCalculatorImpl implements CoastLengthCalculator {
                 int nextY = y + direction.yOffset;
                 if (map[nextX][nextY] == Location.LAND.value || map[nextX][nextY] == Location.COAST_LAND.value) {
                     next = direction;
-
                     if (prev != null) {
                         List<Direction> coastLine = MovementCalculator.findCoastLine(prev, next);
                         coastLength += coastLine.size();
                         map[x][y] = Location.COAST_LAND.value;
                         MovementCalculator.updateLocationByDirections(x, y, map, coastLine, Location.COAST_WATER);
-                        System.out.println(prev + " -> " + next + " " + coastLength);
+//                        System.out.println(prev + " -> " + next + " " + coastLength);
                     }
                     if (x == startX && y == startY) {
                         if (map[nextX][nextY] == Location.COAST_LAND.value) {

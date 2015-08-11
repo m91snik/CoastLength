@@ -1,7 +1,7 @@
 package com.m91snik.coastlength;
 
 import com.m91snik.coastlength.impl.CoastLengthCalculatorImpl;
-import org.junit.Ignore;
+import org.apache.commons.lang.math.RandomUtils;
 import org.junit.Test;
 
 import java.util.Random;
@@ -16,11 +16,8 @@ import java.util.concurrent.*;
  * By default it's ignored, because there is hardcoded time limit on each execution of CoastLength calculator,
  * but it makes sense to run it in case of any significant changes and set required parameters here
  */
-@Ignore
 public class CoastLengthCalculatorLoadTest {
 
-    public static final int DIM = 1000;
-    private static final int[][] MAP = new int[DIM][DIM];
 
     @Test
     public void coastLengthCalculatorTest() throws ExecutionException, InterruptedException, TimeoutException {
@@ -28,18 +25,21 @@ public class CoastLengthCalculatorLoadTest {
         // use executor to set time limits for service
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        for (int k = 0; k < 100; k++) {
+        for (int k = 0; k < 1000; k++) {
 
-            for (int i = 0; i < DIM; i++) {
-                MAP[i][0] = 0;
-                MAP[0][i] = 0;
-                MAP[i][DIM - 1] = 0;
-                MAP[DIM - 1][i] = 0;
-            }
+            final int n = RandomUtils.nextInt(100);
+            final int m = RandomUtils.nextInt(100);
+            final int[][] MAP = new int[n][m];
+//            for (int i = 0; i < DIM; i++) {
+//                MAP[i][0] = 0;
+//                MAP[0][i] = 0;
+//                MAP[i][DIM - 1] = 0;
+//                MAP[DIM - 1][i] = 0;
+//            }
 
             Random random = new Random();
-            for (int i = 1; i < DIM - 1; i++) {
-                for (int j = 1; j < DIM - 1; j++) {
+            for (int i = 2; i < n - 2; i++) {
+                for (int j = 2; j < m - 2; j++) {
                     MAP[i][j] = random.nextBoolean() ? 1 : 0;
                 }
             }
@@ -48,14 +48,17 @@ public class CoastLengthCalculatorLoadTest {
                 @Override
                 public Integer call() throws Exception {
                     CoastLengthCalculator coastLengthCalculator = new CoastLengthCalculatorImpl();
-                    return coastLengthCalculator.findCoastAndCalculateLength(DIM, DIM, MAP);
+                    return coastLengthCalculator.findCoastAndCalculateLength(n, m, MAP);
                 }
             });
 
             try {
-                submit.get(500, TimeUnit.MILLISECONDS);
+                System.out.println(submit.get(50, TimeUnit.MILLISECONDS));
             } catch (TimeoutException e) {
-                //printMap(MAP);
+                printMap(MAP);
+                throw e;
+            } catch (Exception e) {
+                printMap(MAP);
                 throw e;
             }
         }
