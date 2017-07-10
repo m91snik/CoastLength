@@ -53,18 +53,6 @@ public class CoastLengthCalculatorImpl implements CoastLengthCalculator {
         return coastLength;
     }
 
-    //can be used for logging
-    private static void printMap(int n, int m, int[][] map) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                System.out.print(map[i][j] + " ");
-            }
-            System.out.println();
-        }
-
-        System.out.println("--------------------------");
-    }
-
     private int calculateCoastLength(int[][] map, int startX, int startY) {
         int coastLength = 0;
         int x = startX, y = startY;
